@@ -1,0 +1,100 @@
+---
+title: "Data Exploration"
+author: "Julie Norman"
+date: "9/26/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Country Info
+```{r}
+library(readxl)
+countries_data <- read_excel("~/Documents/Economics/countries of the world.xls")
+
+```
+
+
+# Data Survey
+```{r}
+library(haven)
+data = read_dta("~/Documents/Economics/Econometrics Project/CEEPASurvey.dta")
+
+```
+
+# Data Convert
+```{r}
+cleandata1 <- data
+
+cleandata1$gender1 <- factor(cleandata1$gender1, levels = c(1, 2), labels = c("male",  "female"))
+
+cleandata1$married1 <- factor(cleandata1$married1, levels = c(1, 2, 3, 4), labels =  c("marriage or cohabitation", "never married", "previously married", "child"))
+
+cleandata1$farmwork1 <- factor(cleandata1$farmwork1, levels = c(1, 2), labels = c("yes", "no"))
+
+cleandata1$nfarmwork1 <- factor(cleandata1$nfarmwork1, levels = c(1, 2), labels = c("yes", "no"))
+```
+
+```{r}
+cleandata1$hhrelig <- factor(cleandata1$hhrelig, levels = c(1, 2, 3, 4, 5), labels = c("nonreligious", "Christianity", "Islam", "African Traditional", "other"))
+
+cleandata1$hhelectric <- factor(cleandata1$hhelectric, levels = c(1, 2), labels = c("yes", "no"))
+
+cleandata1$farmtype <- factor(cleandata1$farmtype, levels = c(1, 2, 3), labels = c("small", "medium", "large"))
+
+cleandata1$relhead <- factor(cleandata1$relhead, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9), labels = c("head of house", "husband", "wife", "child", "grandchild", "parents", "siblings", "other family and house help", "manager or proxy owner"))
+
+cleandata1$hhhdocc1 <- factor(cleandata1$hhhdocc1, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), labels = c("farmer", "farm laborer", "artisan", "office worker", "civil servant", "teacher", "health worker", "trader", "student", "unemployed", "not in labor force", "other agriculture"))
+```
+
+```{r}
+cleandata1$hhhdocc2 <- factor(cleandata1$hhhdocc2, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), labels = c("farmer", "farm laborer", "artisan", "office worker", "civil servant", "teacher", "health worker", "trader", "student", "unemployed", "not in labor force", "other agriculture"))
+
+cleandata1$fplots <- factor(cleandata1$fplots, levels = c(1, 2, 3, 4), labels = c(1, 2, 3, "4+"))
+
+cleandata1$fsystem1 <- factor(cleandata1$fsystem1, levels = c(1, 2, 3, 4, 5, 6), labels = c("shifting cultivation", "continuous cropping", "continuous cropping with rotation", "livestock grazing", "other", "combination"))
+
+cleandata1$tenure1 <- factor(cleandata1$tenure1, levels = c(1, 2, 3, 4, 5, 6, 7), labels = c("own land and use", "own land and rent out", "sharecropped", "communal", "rented", "borrowed", "other"))
+```
+
+```{r}
+cleandata1$seas1nam <- factor(cleandata1$seas1nam, levels = c(1, 2, 3), labels = c("winter", "summer", "other"))
+
+cleandata1$s1p1c1 <- factor(cleandata1$s1p1c1, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56), labels = c("alfalfa", "banana", "barley", "beans", "cashew", "cassava", "citris fruit", "chickpeas", "clover", "cocoa", "cocoyam", "cowpea", "coffee", "cotton", "cucumber", "enset", "field pea", "flax", "garden-eggs", "garlic", "grape", "groundnut", "kola", "lentil", "mango", "maise", "millet", "palm oil", "okra", "onion", "palm dates", "paprika", "peanuts", "pepper", "pigeon pea","pineapple", "plantain", "potato", "rice", "safflower", "sesame", "shallots", "sheanut", "sorghum", "soybean", "spinach", "squash", "sugarcane", "sunflower", "tea", "tef", "tobacco", "tomato", "wheat", "yam", "other"))
+
+cleandata1$pc1 <- factor(cleandata1$pc1, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56), labels = c("alfalfa", "banana", "barley", "beans", "cashew", "cassava", "citris fruit", "chickpeas", "clover", "cocoa", "cocoyam", "cowpea", "coffee", "cotton", "cucumber", "enset", "field pea", "flax", "garden-eggs", "garlic", "grape", "groundnut", "kola", "lentil", "mango", "maise", "millet", "palm oil", "okra", "onion", "palm dates", "paprika", "peanuts", "pepper", "pigeon pea","pineapple", "plantain", "potato", "rice", "safflower", "sesame", "shallots", "sheanut", "sorghum", "soybean", "spinach", "squash", "sugarcane", "sunflower", "tea", "tef", "tobacco", "tomato", "wheat", "yam", "other"))
+```
+
+```{r}
+cleandata1$s1p1wat1 <- factor(cleandata1$s1p1wat1, levels = c(1, 2, 3, 4, 5), labels = c("public irrigation", "private irrigation", "groundwater", "rain", "orther"))
+
+cleandata1$s1p1irrig1 <- factor(cleandata1$s1p1irrig1, levels = c(1, 2, 3, 4), labels = c("gravity", "sprinklers", "drip system", "other"))
+```
+
+
+```{r}
+View(cleandata1$cr)
+
+cleandata1$s1p1c1
+```
+
+
+```{r}
+cleandata1$ad711
+
+cleandata1$adjrainfallshifts1
+
+cleandata1$aaa
+```
+
+Hhrelig: 1-nonreligious, 2- Christianity, 3- Islam, 4- African Tradition Religion, 5- other
+
+```{r}
+View(cleandata1$hhtribe)
+```
+
+
+
+
