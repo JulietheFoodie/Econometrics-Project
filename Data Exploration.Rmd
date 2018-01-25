@@ -1,5 +1,5 @@
 ---
-title: "Data Exploration"
+title: "Data Exploration: Markdown 1"
 author: "Julie Norman"
 date: "9/26/2017"
 output: html_document
@@ -9,92 +9,175 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Country Info
+#Libraries
 ```{r}
 library(readxl)
-countries_data <- read_excel("~/Documents/Economics/countries of the world.xls")
-
+library(haven)
+library(reshape2) 
 ```
 
 
 # Data Survey
 ```{r}
-library(haven)
-data = read_dta("~/Documents/Economics/Econometrics Project/CEEPASurvey.dta")
+df <- read_dta("~/Documents/Economics/Econometrics Project/CEEPA (1)/CEEPASurvey.dta")
+
+
 
 ```
 
 # Data Convert
+
+## Gender
 ```{r}
-cleandata1 <- data
+gen_cols <- c("gender1", "gender2", "gender3", "gender4", "gender5", "gender6", "gender7", "gender8", "gender9", "gender10", "gender11", "gender12", "gender13", "gender14", "gender15", "gender16", "gender17", "gender18", "gender19", "gender20", "gender21", "gender22", "gender23", "gender24", "gender25", "gender26", "gender27", "gender28", "gender29", "gender30", "gender31", "gender32", "gender33", "gender34", "gender35", "gender36", "gender37", "gender38")
 
-cleandata1$gender1 <- factor(cleandata1$gender1, levels = c(1, 2), labels = c("male",  "female"))
+gender_factor <- function(x){ 
+  y <- factor(x, levels = c(1, 2), labels = c("male",  "female"))}
 
-cleandata1$married1 <- factor(cleandata1$married1, levels = c(1, 2, 3, 4), labels =  c("marriage or cohabitation", "never married", "previously married", "child"))
+df[gen_cols] <- lapply(df[gen_cols], gender_factor)
 
-cleandata1$farmwork1 <- factor(cleandata1$farmwork1, levels = c(1, 2), labels = c("yes", "no"))
 
-cleandata1$nfarmwork1 <- factor(cleandata1$nfarmwork1, levels = c(1, 2), labels = c("yes", "no"))
-```
-
-```{r}
-cleandata1$hhrelig <- factor(cleandata1$hhrelig, levels = c(1, 2, 3, 4, 5), labels = c("nonreligious", "Christianity", "Islam", "African Traditional", "other"))
-
-cleandata1$hhelectric <- factor(cleandata1$hhelectric, levels = c(1, 2), labels = c("yes", "no"))
-
-cleandata1$farmtype <- factor(cleandata1$farmtype, levels = c(1, 2, 3), labels = c("small", "medium", "large"))
-
-cleandata1$relhead <- factor(cleandata1$relhead, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9), labels = c("head of house", "husband", "wife", "child", "grandchild", "parents", "siblings", "other family and house help", "manager or proxy owner"))
-
-cleandata1$hhhdocc1 <- factor(cleandata1$hhhdocc1, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), labels = c("farmer", "farm laborer", "artisan", "office worker", "civil servant", "teacher", "health worker", "trader", "student", "unemployed", "not in labor force", "other agriculture"))
-```
-
-```{r}
-cleandata1$hhhdocc2 <- factor(cleandata1$hhhdocc2, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), labels = c("farmer", "farm laborer", "artisan", "office worker", "civil servant", "teacher", "health worker", "trader", "student", "unemployed", "not in labor force", "other agriculture"))
-
-cleandata1$fplots <- factor(cleandata1$fplots, levels = c(1, 2, 3, 4), labels = c(1, 2, 3, "4+"))
-
-cleandata1$fsystem1 <- factor(cleandata1$fsystem1, levels = c(1, 2, 3, 4, 5, 6), labels = c("shifting cultivation", "continuous cropping", "continuous cropping with rotation", "livestock grazing", "other", "combination"))
-
-cleandata1$tenure1 <- factor(cleandata1$tenure1, levels = c(1, 2, 3, 4, 5, 6, 7), labels = c("own land and use", "own land and rent out", "sharecropped", "communal", "rented", "borrowed", "other"))
-```
-
-```{r}
-cleandata1$seas1nam <- factor(cleandata1$seas1nam, levels = c(1, 2, 3), labels = c("winter", "summer", "other"))
-
-cleandata1$s1p1c1 <- factor(cleandata1$s1p1c1, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56), labels = c("alfalfa", "banana", "barley", "beans", "cashew", "cassava", "citris fruit", "chickpeas", "clover", "cocoa", "cocoyam", "cowpea", "coffee", "cotton", "cucumber", "enset", "field pea", "flax", "garden-eggs", "garlic", "grape", "groundnut", "kola", "lentil", "mango", "maise", "millet", "palm oil", "okra", "onion", "palm dates", "paprika", "peanuts", "pepper", "pigeon pea","pineapple", "plantain", "potato", "rice", "safflower", "sesame", "shallots", "sheanut", "sorghum", "soybean", "spinach", "squash", "sugarcane", "sunflower", "tea", "tef", "tobacco", "tomato", "wheat", "yam", "other"))
-
-cleandata1$pc1 <- factor(cleandata1$pc1, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56), labels = c("alfalfa", "banana", "barley", "beans", "cashew", "cassava", "citris fruit", "chickpeas", "clover", "cocoa", "cocoyam", "cowpea", "coffee", "cotton", "cucumber", "enset", "field pea", "flax", "garden-eggs", "garlic", "grape", "groundnut", "kola", "lentil", "mango", "maise", "millet", "palm oil", "okra", "onion", "palm dates", "paprika", "peanuts", "pepper", "pigeon pea","pineapple", "plantain", "potato", "rice", "safflower", "sesame", "shallots", "sheanut", "sorghum", "soybean", "spinach", "squash", "sugarcane", "sunflower", "tea", "tef", "tobacco", "tomato", "wheat", "yam", "other"))
-```
-
-```{r}
-cleandata1$s1p1wat1 <- factor(cleandata1$s1p1wat1, levels = c(1, 2, 3, 4, 5), labels = c("public irrigation", "private irrigation", "groundwater", "rain", "orther"))
-
-cleandata1$s1p1irrig1 <- factor(cleandata1$s1p1irrig1, levels = c(1, 2, 3, 4), labels = c("gravity", "sprinklers", "drip system", "other"))
 ```
 
 
-```{r}
-View(cleandata1$cr)
 
-cleandata1$s1p1c1
+## Marriage
+```{r}
+mar_cols <- c("married1", "married2", "married3", "married4", "married5", "married6", "married7", "married8", "married9", "married10", "married11", "married12", "married13", "married14", "married15", "married16", "married17", "married18", "married19", "married20", "married21", "married22", "married23", "married24", "married25", "married26", "married27", "married28", "married29", "married30", "married31", "married32", "married33", "married34", "married35", "married36", "married37", "married38")
+
+married_factor <- function(x){
+  y <- factor(x, levels = c(1, 2, 3, 4), labels =  c("marriage or cohabitation", "never married", "previously married", "child"))}
+
+df[mar_cols] <- lapply(df[mar_cols], married_factor)
+```
+
+## Farmwork 
+```{r}
+fwork_cols <- c("farmwork1", "farmwork2", "farmwork3", "farmwork4", "farmwork5", "farmwork6", "farmwork7", "farmwork8", "farmwork9", "farmwork10", "farmwork11", "farmwork12", "farmwork13", "farmwork14", "farmwork15", "farmwork16", "farmwork17", "farmwork18", "farmwork19", "farmwork20", "farmwork21", "farmwork22", "farmwork23", "farmwork24", "farmwork25", "farmwork26", "farmwork27", "farmwork28", "farmwork29", "farmwork30", "farmwork31", "farmwork32", "farmwork33", "farmwork34", "farmwork35", "farmwork36", "farmwork37", "farmwork38", "nfarmwork1", "nfarmwork2", "nfarmwork3", "nfarmwork4", "nfarmwork5", "nfarmwork6", "nfarmwork7", "nfarmwork8", "nfarmwork9", "nfarmwork10", "nfarmwork11", "nfarmwork12", "nfarmwork13", "nfarmwork14", "nfarmwork15", "nfarmwork16", "nfarmwork17", "nfarmwork18", "nfarmwork19", "nfarmwork20", "nfarmwork21", "nfarmwork22", "nfarmwork23", "nfarmwork24", "nfarmwork25", "nfarmwork26", "nfarmwork27", "nfarmwork28", "nfarmwork29", "nfarmwork30", "nfarmwork31", "nfarmwork32", "nfarmwork33", "nfarmwork34", "nfarmwork35", "nfarmwork36", "nfarmwork37", "nfarmwork38")
+
+fwork_factor <- function(x){
+  y <- factor(x, levels = c(1, 2), labels = c("yes", "no"))}
+
+df[fwork_cols] <- lapply(df[fwork_cols], fwork_factor)
+
+```
+
+## Relationship to the head
+
+```{r}
+df$hhrelig <- factor(df$hhrelig, levels = c(1, 2, 3, 4, 5), labels = c("nonreligious", "Christianity", "Islam", "African Traditional", "other"))
+
+df$hhelectric <- factor(df$hhelectric, levels = c(1, 2), labels = c("yes", "no"))
+
+df$farmtype <- factor(df$farmtype, levels = c(1, 2, 3), labels = c("small", "medium", "large"))
+
+df$relhead <- factor(df$relhead, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9), labels = c("head of house", "husband", "wife", "child", "grandchild", "parents", "siblings", "other family and house help", "manager or proxy owner"))
+
+#df$fplots <- factor(df$fplots, levels = c(1, 2, 3, 4), labels = c(, 2, 3, ))
+
 ```
 
 
 ```{r}
-cleandata1$ad711
+df$hhhdocc1 <- factor(df$hhhdocc1, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), labels = c("farmer", "farm laborer", "artisan", "office worker", "civil servant", "teacher", "health worker", "trader", "student", "unemployed", "not in labor force", "other agriculture"))
 
-cleandata1$adjrainfallshifts1
-
-cleandata1$aaa
-```
-
-Hhrelig: 1-nonreligious, 2- Christianity, 3- Islam, 4- African Tradition Religion, 5- other
-
-```{r}
-View(cleandata1$hhtribe)
+df$hhhdocc2 <- factor(df$hhhdocc2, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), labels = c("farmer", "farm laborer", "artisan", "office worker", "civil servant", "teacher", "health worker", "trader", "student", "unemployed", "not in labor force", "other agriculture"))
 ```
 
 
 
 
+
+```{r}
+fsystem_cols <- c("fsystem1", "fsystem2", "fsystem3", "fsystem4", "fsystem5", "fsystem6", "fsystem7", "fsystem8", "fsystem9", "fsystem10", "fsystem11", "fsystem12")
+
+df$fsystem_mode <- mode(fsystem_cols)
+
+fsystem_cols2 <- c("fsystem1", "fsystem2", "fsystem3", "fsystem4", "fsystem5", "fsystem6", "fsystem7", "fsystem8", "fsystem9", "fsystem10", "fsystem11", "fsystem12", "fsystem_mode")
+
+fsystem_factor <- function(x){
+  y <- factor(x, levels = c(1, 2, 3, 4, 5, 6), labels = c("shifting cultivation", "continuous cropping", "continuous cropping with rotation", "livestock grazing", "other", "combination"))}
+
+df[fsystem_cols2] <- lapply(df[fsystem_cols], fsystem_factor)
+
+
+```
+
+```{r}
+tenure_cols <- c("tenure1", "tenure2", "tenure3", "tenure4", "tenure5", "tenure6", "tenure7", "tenure8", "tenure9", "tenure10", "tenure11", "tenure12")
+
+df$tenure_mode <- mode(tenure_cols)
+
+tenure_cols2 <- c("tenure1", "tenure2", "tenure3", "tenure4", "tenure5", "tenure6", "tenure7", "tenure8", "tenure9", "tenure10", "tenure11", "tenure12", "tenure_mode")
+
+tenure_factor <- function(x){
+  y <- factor(x, levels = c(1, 2, 3, 4, 5, 6, 7), labels = c("own land and use", "own land and rent out", "sharecropped", "communal", "rented", "borrowed", "other"))}
+
+df[tenure_cols2] <- lapply(df[tenure_cols], tenure_factor)
+```
+
+```{r}
+seas_cols <- c("seas1nam", "seas2nam", "seas3nam") 
+
+seas_factor <- function(x){
+  y <- factor(x, levels = c(1, 2, 3), labels = c("winter", "summer", "other"))}
+
+df[seas_cols] <- lapply(df[seas_cols], seas_factor)
+
+```
+
+
+
+
+S1-3 P1-2, c1-6
+```{r}
+crop_col <- c("s1p1c1", "s1p1c2", "s1p1c3", "s1p1c4", "s1p1c5", "s1p1c6", "s1p2c1", "s1p2c2", "s1p2c3", "s1p2c4", "s1p2c5", "s1p2c6", "s2p1c1", "s2p1c2", "s2p1c3", "s2p1c4", "s2p1c5", "s2p1c6", "s2p2c1", "s2p2c2", "s2p2c3", "s2p2c4", "s2p2c5", "s2p2c6", "s3p1c1", "s3p1c2", "s3p1c3", "s3p1c4", "s3p1c5", "s3p1c6", "s3p2c1", "s3p2c2", "s3p2c3", "s3p2c4", "s3p2c5", "s3p2c6")
+
+crop_factor <- function(x){y <- factor(x, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56), labels = c("alfalfa", "banana", "barley", "beans", "cashew", "cassava", "citrus fruit", "chickpeas", "clover", "cocoa", "cocoyam", "cowpea", "coffee", "cotton", "cucumber", "enset", "field pea", "flax", "garden-eggs", "garlic", "grape", "groundnut", "kola", "lentil", "mango", "maise", "millet", "palm oil", "okra", "onion", "palm dates", "paprika", "peanuts", "pepper", "pigeon pea","pineapple", "plantain", "potato", "rice", "safflower", "sesame", "shallots", "sheanut", "sorghum", "soybean", "spinach", "squash", "sugarcane", "sunflower", "tea", "tef", "tobacco", "tomato", "wheat", "yam", "other"))}
+
+df[crop_col] <- lapply(df[crop_col], crop_factor)
+
+```
+
+```{r}
+irrig_col <- c( "s1p1irrig1", "s1p2irrig1", "s2p1irrig1", "s2p2irrig1", "s3p1irrig1", "s3p2irrig1", "s1p1irrig2", "s1p2irrig2", "s2p1irrig2", "s2p2irrig2", "s3p1irrig2", "s3p2irrig2", "s1p1irrig3", "s1p2irrig3", "s2p1irrig3", "s2p2irrig3", "s3p1irrig3", "s3p2irrig3", "s1p1irrig4", "s1p2irrig4", "s2p1irrig4", "s2p2irrig4", "s3p1irrig4", "s3p2irrig4")
+
+irrig_factor <- function(x){y <- factor(x, levels = c(1, 2, 3, 4), labels = c("gravity", "sprinklers", "drip system", "other"))}
+
+df[irrig_col] <- lapply(df[irrig_col], irrig_factor)
+
+#cleandata1$s1p1irrig1 <- factor(cleandata1$s1p1irrig1, levels = c(1, 2, 3, 4), labels = c("gravity", "sprinklers", "drip system", "other"))
+
+table(df$s1p1irrig1)
+```
+
+
+```{r}
+wats_col <- c("s1p1wat1", "s1p1wat2", "s1p1wat3", "s1p1wat4", "s1p1wat5")
+
+wats_mode <- mode(wats_col)
+
+wats_col2 <- c("s1p1wat1", "s1p1wat2", "s1p1wat3", "s1p1wat4", "s1p1wat5", "wats_mode")
+
+wats_factor <- function(x){y <- factor(x,  levels = c(1, 2, 3, 4, 5), labels = c("public irrigation", "private irrigation", "groundwater", "rain", "orther"))}
+
+df[wats_col2] <- lapply(df[wats_col], wats_factor)
+
+
+df$transport <- factor(df$transport, levels = c(1, 2, 3, 4, 6), labels = c("walk", "animal", "cart or bicycle", "motor vehicle", "other or combo"))
+
+
+
+```
+
+# Write CSV
+
+```{r}
+write.csv(df, "df2")
+```
+
+
+  
+  
+  
+  

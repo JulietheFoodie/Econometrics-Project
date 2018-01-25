@@ -1,0 +1,95 @@
+---
+title: "Misc Code"
+author: "Julie Norman"
+date: "11/21/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Country Info
+```{r}
+count_data <- read_excel("~/Documents/Economics/countries of the world.xls")
+
+```
+
+```{r}
+
+
+#cleandata1$s1p1irrig1 <- factor(cleandata1$s1p1irrig1, levels = c(1, 2, 3, 4), labels = c("gravity", "sprinklers", "drip system", "other"))
+
+#cleandata1$lvsown <- factor(cleandata1$lvsown, levels = c(1, 0), labels = c("yes", "no"))
+#cleandata1$extl <- factor(cleandata1$extl, levels = c(1, 2), labels = c("yes", "no"))
+
+#cleandata1$extc <- factor(cleandata1$extc, levels = c(1, 2), labels = c("yes", "no"))
+
+#cleandata1$extcpay <- factor(cleandata1$extcpay, levels = c(1, 2), labels = c("yes", "no"))
+```
+
+```{r}
+#cleandata1$extlpay <- factor(cleandata1$extlpay, levels = c(1, 2), labels = c("yes", "no"))
+
+#cleandata1$extclim <- factor(cleandata1$extclim, levels = c(1, 2), labels = c("yes", "no"))
+
+#cleandata1$extother <- factor(cleandata1$extother, levels = c(1, 2, 3, 4, 5, 6), labels = c("media", "neighboring farmer", "shopkeepers", "other", "2 combo",  "2+ combo"))
+```
+
+```{r}
+#cleandata1$inc1 <- factor(cleandata1$extc, levels = c(1, 2), labels = c("yes", "no"))
+```
+
+
+```{r}
+View(cleandata1$cr)
+
+cleandata1$s1p1c1
+```
+
+
+```{r}
+cleandata1$ad711
+
+cleandata1$adjrainfallshifts1
+
+cleandata1$aaa
+```
+
+Hhrelig: 1-nonreligious, 2- Christianity, 3- Islam, 4- African Tradition Religion, 5- other
+
+```{r}
+View(cleandata1$hhtribe)
+```
+
+
+
+Frequency counts
+```{r}
+cleandatatest2 <- as.data.frame.matrix(table(melt(cleandatatest, id.var='hhcode')[-2], useNA='ifany'))
+colnames(cleandatatest2) <- paste0('Freq', colnames(cleandatatest2))
+cbind(cleandatatest, cleandatatest2)
+```
+
+
+```{r}
+# reg1 <- lm(educ_mean_female ~ country + hhg_count_female + hhg_count_male + educ_mean_male + farmwork_countY_female +  farmwork_countY_male + hhrelig + hhhdocc1 + hhhdocc2 + hhelectric + farmtype + fsystem1 + fsystem2 + fplots + fert_sum + ban_sum + bean_sum + cass_sum + chic_sum + citfrui_sum + clov_sum + cof_sum + cot_sum + cow_sum + cuc_sum + flax_sum + grap_sum + gnut_sum + kol_sum +  mais_sum + mang_sum + mil_sum + okra_sum + oni_sum + other_sum + date_sum + p_oil_sum + pap_sum + pnut_sum + pep_sum + pigp_sum + pine_sum + plan_sum + pota_sum + rice_sum + shea_sum + sorg_sum + soy_sum + spin_sum + sug_sum + tea_sum + tob_sum + tom_sum + whe_sum + yam_sum, data = reg_df)
+# 
+# summary(reg1)
+```
+
+
+```{r}
+#final <- reg_df[!(is.na(reg_df$hhelectric)),]
+
+#table(reg_df$hhelectric)
+#final
+```
+
+```{r}
+regA <- lm(hhg_ratio ~ educ_mean_male, data = reg_df)
+regB <- lm(hhg_ratio ~ qharv_total, data = reg_df)
+regC <- lm(educ_mean_male ~ qharv_total, data = reg_df)
+
+stargazer(regA, regB, regC, type = "text")
+```

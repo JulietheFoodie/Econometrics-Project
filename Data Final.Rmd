@@ -1,0 +1,239 @@
+---
+title: "Cleaning, Markdown 4"
+author: "Julie Norman"
+date: "11/28/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(modeest)
+library(functional)
+library(mosaic)
+
+```
+
+
+```{r}
+comp_df <- read.csv("comp_df")
+regT_df <- comp_df
+
+head(comp_df)
+dim(comp_df)
+
+```
+
+
+
+
+# Variable Adding 
+
+## Family
+
+```{r}
+hhg_count_female <- comp_df$hhg_count_female 
+hhg_count_male <- comp_df$hhg_count_male
+
+comp_df$hh_count <- (hhg_count_female + hhg_count_male)
+```
+
+## Farm Complete
+```{r}
+fert_sum <- rowSums(comp_df[, c("fert_s1p1", "fert_s1p2", "fert_s2p1", "fert_s2p2", "fert_s3p1", "fert_s3p2") ], na.rm = TRUE)
+
+pest_sum <- rowSums(comp_df[, c("pest_s1p1", "pest_s1p2", "pest_s2p1", "pest_s2p2", "pest_s3p1", "pest_s3p2")], na.rm = TRUE)
+
+harv_sum <- rowSums(comp_df[, c("c1harv_s1p1", "c1harv_s1p2",  "c1harv_s2p1", "c1harv_s2p2", "c1harv_s3p1", "c1harv_s3p2", "c2harv_s1p1", "c2harv_s1p2",  "c2harv_s2p1", "c2harv_s2p2", "c2harv_s3p1", "c2harv_s3p2", "c3harv_s1p1", "c3harv_s1p2",  "c3harv_s2p1", "c3harv_s2p2", "c3harv_s3p1", "c3harv_s3p2", "c4harv_s1p1", "c4harv_s1p2",  "c4harv_s2p1", "c4harv_s2p2", "c4harv_s3p1", "c4harv_s3p2", "c5harv_s1p1", "c5harv_s1p2",  "c5harv_s2p1", "c5harv_s2p2", "c5harv_s3p1", "c5harv_s3p2", "c6harv_s1p1", "c6harv_s1p2",  "c6harv_s2p1", "c6harv_s2p2", "c6harv_s3p1", "c6harv_s3p2")], na.rm = TRUE)
+
+
+comp_df$cons_sum <- rowSums(comp_df[, c("c1cons_s1p1", "c1cons_s1p2",  "c1cons_s2p1", "c1cons_s2p2", "c1cons_s3p1", "c1cons_s3p2", "c2cons_s1p1", "c2cons_s1p2",  "c2cons_s2p1", "c2cons_s2p2", "c2cons_s3p1", "c2cons_s3p2", "c3cons_s1p1", "c3cons_s1p2",  "c3cons_s2p1", "c3cons_s2p2", "c3cons_s3p1", "c3cons_s3p2", "c4cons_s1p1", "c4cons_s1p2",  "c4cons_s2p1", "c4cons_s2p2", "c4cons_s3p1", "c4cons_s3p2", "c5cons_s1p1", "c5cons_s1p2",  "c5cons_s2p1", "c5cons_s2p2", "c5cons_s3p1", "c5cons_s3p2", "c6cons_s1p1", "c6cons_s1p2",  "c6cons_s2p1", "c6cons_s2p2", "c6cons_s3p1", "c6cons_s3p2")], na.rm = TRUE)
+
+#comp_df$perc_cons <- row(comp_df$cons_sum / comp_df$harv_sum)
+
+#All columns empty but "other"
+#comp_df$gravity <- rowSums(comp_df == "gravity", na.rm = TRUE)
+#comp_df$drip <- rowSums(comp_df == "drip system", na.rm = TRUE)
+#comp_df$sprink <- rowSums(comp_df == "sprinklers", na.rm = TRUE)
+#comp_df$other <- rowSums(comp_df == "other", na.rm = TRUE)
+
+comp_df$pub_irrig <- rowSums(comp_df == "public irrigation", na.rm = TRUE)
+comp_df$priv_irrig <- rowSums(comp_df == "private irrigation", na.rm = TRUE)
+comp_df$gwater <- rowSums(comp_df == "groundwater", na.rm = TRUE)
+comp_df$rain <- rowSums(comp_df == "rain", na.rm = TRUE)
+comp_df$other_wat <- rowSums(comp_df == "other", na.rm = TRUE)
+
+```
+
+c("public irrigation", "private irrigation", "groundwater", "rain", "orther")
+
+dat$e <- rowSums(dat[,c("b", "c")], na.rm=TRUE)
+
+# Crops
+```{r}
+comp_df$alf_sum <- rowSums(comp_df[, c("alfalfa_s1p1", "alfalfa_s1p2",  "alfalfa_s2p1", "alfalfa_s2p2", "alfalfa_s3p1", "alfalfa_s3p2")], na.rm = TRUE)
+
+comp_df$ban_sum <- rowSums(comp_df[, c("banana_s1p1", "banana_s1p2",  "banana_s2p1", "banana_s2p2", "banana_s3p1", "banana_s3p2")], na.rm = TRUE)
+
+comp_df$bar_sum <- rowSums(comp_df[, c("barley_s1p1", "barley_s1p2",  "barley_s2p1", "barley_s2p2", "barley_s3p1", "barley_s3p2")], na.rm = TRUE)
+
+comp_df$bean_sum <- rowSums(comp_df[, c("beans_s1p1", "beans_s1p2",  "beans_s2p1", "beans_s2p2", "beans_s3p1", "beans_s3p2")], na.rm = TRUE)
+
+# Empty comp_df$cash_sum <- rowSums(comp_df[, c("cashew_s1p1", "cashew_s1p2", # "cashew_s2p1", "cashew_s2p2", "cashew_s3p1", "cashew_s3p2")], na.rm =     # TRUE)
+
+comp_df$cass_sum <- rowSums(comp_df[, c( "cassava_s1p1", "cassava_s1p2",  "cassava_s2p1", "cassava_s2p2", "cassava_s3p1", "cassava_s3p2")], na.rm = TRUE)
+
+comp_df$chic_sum <- rowSums(comp_df[, c("chickpeas_s1p1", "chickpeas_s1p2",  "chickpeas_s2p1", "chickpeas_s2p2", "chickpeas_s3p1", "chickpeas_s3p2")], na.rm = TRUE)
+
+comp_df$citfrui_sum <- rowSums(comp_df[, c("citrus_fruit_s1p1", "citrus_fruit_s1p2",  "citrus_fruit_s2p1", "citrus_fruit_s2p2", "citrus_fruit_s3p1", "citrus_fruit_s3p2")], na.rm = TRUE)
+
+comp_df$clov_sum <- rowSums( comp_df[ c("clover_s1p1", "clover_s1p2",  "clover_s2p1", "clover_s2p2", "clover_s3p1", "clover_s3p2")], na.rm = TRUE)
+
+# Empty comp_df$coco_sum <- rowSums( comp_df[ c("cocoa_s1p1", "cocoa_s1p2",  "cocoa_s2p1", "cocoa_s2p2", "cocoa_s3p1", "cocoa_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$cocoy_sum <- rowSums( comp_df[ c( "cocoa_s1p1", "cocoa_s1p2",  "cocoa_s2p1", "cocoa_s2p2", "cocoa_s3p1", "cocoa_s3p2" )], na.rm = TRUE)
+
+comp_df$cof_sum <- rowSums( comp_df[ c("cocoyam_s1p1", "cocoyam_s1p2",  "cocoyam_s2p1", "cocoyam_s2p2", "cocoyam_s3p1", "cocoyam_s3p2" )], na.rm = TRUE)
+
+comp_df$cot_sum <- rowSums( comp_df[ c("cotton_s1p1", "cotton_s1p2",  "cotton_s2p1", "cotton_s2p2", "cotton_s3p1", "cotton_s3p2" )], na.rm = TRUE)
+
+comp_df$cow_sum <- rowSums( comp_df[ c( "cowpea_s1p1", "cowpea_s1p2",  "cowpea_s2p1", "cowpea_s2p2", "cowpea_s3p1", "cowpea_s3p2" )], na.rm = TRUE)
+
+comp_df$cuc_sum <- rowSums( comp_df[ c( "cucumber_s1p1", "cucumber_s1p2",  "cucumber_s2p1", "cucumber_s2p2", "cucumber_s3p1", "cucumber_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$ens_sum <- rowSums( comp_df[ c( "enset_s1p1", "enset_s1p2",  "enset_s2p1", "enset_s2p2", "enset_s3p1", "enset_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$fpea_sum <- rowSums( comp_df[ c("field_pea_s1p1", "field_pea_s1p2",  "field_pea_s2p1", "field_pea_s2p2", "field_pea_s3p1", "field_pea_s3p2" )], na.rm = TRUE)
+
+comp_df$flax_sum <- rowSums( comp_df[ c( "flax_s1p1", "flax_s1p2",  "flax_s2p1", "flax_s2p2", "flax_s3p1", "flax_s3p2")], na.rm = TRUE)
+
+# Empty comp_df$egg_sum <- rowSums( comp_df[ c("garden_eggs_s1p1", "garden_eggs_s1p2",  "garden_eggs_s2p1", "garden_eggs_s2p2", "garden_eggs_s3p1", "garden_eggs_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$gar_sum <- rowSums( comp_df [ c( "garlic_s1p1", "garlic_s1p2",  "garlic_s2p1", "garlic_s2p2", "garlic_s3p1", "garlic_s3p2")], na.rm = TRUE)
+
+comp_df$grap_sum <- rowSums( comp_df[ c( "grape_s1p1", "grape_s1p2",  "grape_s2p1", "grape_s2p2", "grape_s3p1", "grape_s3p2" )], na.rm = TRUE)
+
+comp_df$gnut_sum <- rowSums( comp_df[ c( "groundnut_s1p1", "groundnut_s1p2",  "groundnut_s2p1", "groundnut_s2p2", "groundnut_s3p1", "groundnut_s3p2" )], na.rm = TRUE) 
+
+comp_df$kol_sum <- rowSums( comp_df[ c( "kola_s1p1", "kola_s1p2",  "kola_s2p1", "kola_s2p2", "kola_s3p1", "kola_s3p2")], na.rm = TRUE)
+
+# Empty comp_df$lent_sum <- rowSums( comp_df[ c( "lentil_s1p1", "lentil_s1p2",  "lentil_s2p1", "lentil_s2p2", "lentil_s3p1", "lentil_s3p2" )], na.rm = TRUE)
+
+comp_df$mais_sum <- rowSums( comp_df[ c("maise_s1p1", "maise_s1p2",  "maise_s2p1", "maise_s2p2", "maise_s3p1", "maise_s3p2" )], na.rm = TRUE)
+
+comp_df$mang_sum <- rowSums( comp_df[ c("mango_s1p1", "mango_s1p2",  "mango_s2p1", "mango_s2p2", "mango_s3p1", "mango_s3p2" )], na.rm = TRUE)
+
+comp_df$mil_sum <- rowSums( comp_df[ c("millet_s1p1", "millet_s1p2",  "millet_s2p1", "millet_s2p2", "millet_s3p1", "millet_s3p2" )], na.rm = TRUE)
+
+comp_df$okra_sum <- rowSums( comp_df[ c("okra_s1p1", "okra_s1p2",  "okra_s2p1", "okra_s2p2", "okra_s3p1", "okra_s3p2" )], na.rm = TRUE)
+
+comp_df$oni_sum <- rowSums( comp_df[ c("onion_s1p1", "onion_s1p2",  "onion_s2p1", "onion_s2p2", "onion_s3p1", "onion_s3p2" )], na.rm = TRUE)
+
+comp_df$other_sum <- rowSums( comp_df[ c("other_s1p1", "other_s1p2",  "other_s2p1", "other_s2p2", "other_s3p1", "other_s3p2" )], na.rm = TRUE)
+
+comp_df$date_sum <- rowSums( comp_df[ c("palm_dates_s1p1", "palm_dates_s1p2",  "palm_dates_s2p1", "palm_dates_s2p2", "palm_dates_s3p1", "palm_dates_s3p2")], na.rm = TRUE)
+
+comp_df$p_oil_sum <- rowSums( comp_df[ c("palm_oil_s1p1", "palm_oil_s1p2",  "palm_oil_s2p1", "palm_oil_s2p2", "palm_oil_s3p1", "palm_oil_s3p2" )], na.rm = TRUE)
+
+comp_df$pap_sum <- rowSums( comp_df[ c("paprika_s1p1", "paprika_s1p2",  "paprika_s2p1", "paprika_s2p2", "paprika_s3p1", "paprika_s3p2" )], na.rm = TRUE)
+
+comp_df$pnut_sum <- rowSums( comp_df[ c("peanuts_s1p1", "peanuts_s1p2",  "peanuts_s2p1", "peanuts_s2p2", "peanuts_s3p1", "peanuts_s3p2" )], na.rm = TRUE)
+
+comp_df$pep_sum <- rowSums( comp_df[ c("pepper_s1p1", "pepper_s1p2",  "pepper_s2p1", "pepper_s2p2", "pepper_s3p1", "pepper_s3p2" )], na.rm = TRUE)
+
+comp_df$pigp_sum <- rowSums( comp_df[ c("pigeon_pea_s1p1", "pigeon_pea_s1p2",  "pigeon_pea_s2p1", "pigeon_pea_s2p2", "pigeon_pea_s3p1", "pigeon_pea_s3p2" )], na.rm = TRUE)
+
+comp_df$pine_sum <- rowSums( comp_df[ c("pineapple_s1p1", "pineapple_s1p2",  "pineapple_s2p1", "pineapple_s2p2", "pineapple_s3p1", "pineapple_s3p2" )], na.rm = TRUE)
+
+comp_df$plan_sum <- rowSums( comp_df[ c("plantain_s1p1", "plantain_s1p2", "plantain_s2p1", "plantain_s2p2", "plantain_s3p1", "plantain_s3p2" )], na.rm = TRUE)
+
+comp_df$pota_sum <- rowSums( comp_df[ c("potato_s1p1", "potato_s1p2",  "potato_s2p1", "potato_s2p2", "potato_s3p1", "potato_s3p2" )], na.rm = TRUE)
+
+comp_df$rice_sum <- rowSums( comp_df[ c("rice_s1p1", "rice_s1p2",  "rice_s2p1", "rice_s2p2", "rice_s3p1", "rice_s3p2")], na.rm = TRUE)
+
+# Empty comp_df$ses_sum <- rowSums( comp_df[ c("sesame_s1p1", "sesame_s1p2",  "sesame_s2p1", "sesame_s2p2", "sesame_s3p1", "sesame_s3p2" )], na.rm = TRUE)
+
+comp_df$shea_sum <- rowSums( comp_df[ c("sheanut_s1p1", "sheanut_s1p2",  "sheanut_s2p1", "sheanut_s2p2", "sheanut_s3p1", "sheanut_s3p2" )], na.rm = TRUE)
+
+comp_df$sorg_sum <- rowSums( comp_df[ c("sorghum_s1p1", "sorghum_s1p2",  "sorghum_s2p1", "sorghum_s2p2", "sorghum_s3p1", "sorghum_s3p2" )], na.rm = TRUE)
+
+comp_df$soy_sum <- rowSums( comp_df[ c("soybean_s1p1", "soybean_s1p2",  "soybean_s2p1", "soybean_s2p2", "soybean_s3p1", "soybean_s3p2" )], na.rm = TRUE)
+
+comp_df$spin_sum <- rowSums( comp_df[ c("spinach_s1p1", "spinach_s1p2",  "spinach_s2p1", "spinach_s2p2", "spinach_s3p1", "spinach_s3p2" )], na.rm = TRUE)
+
+comp_df$squ_sum <- rowSums( comp_df[ c("squash_s1p1", "squash_s1p2",  "squash_s2p1", "squash_s2p2", "squash_s3p1", "squash_s3p2" )], na.rm = TRUE)
+
+comp_df$sug_sum <- rowSums( comp_df[ c("sugarcane_s1p1", "sugarcane_s1p2",  "sugarcane_s2p1", "sugarcane_s2p2", "sugarcane_s3p1",  "sugarcane_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$sunf_sum <- rowSums( comp_df[ c("sunflower_s1p1", "sunflower_s1p2",  "sunflower_s2p1", "sunflower_s2p2", "sunflower_s3p1", "sunflower_s3p2" )], na.rm = TRUE)
+
+comp_df$tea_sum <- rowSums( comp_df[ c("tea_s1p1", "tea_s1p2",  "tea_s2p1", "tea_s2p2", "tea_s3p1", "tea_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$tef_sum <- rowSums( comp_df[ c("tef_s1p1", "tef_s1p2",  "tef_s2p1", "tef_s2p2", "tef_s3p1", "tef_s3p2" )], na.rm = TRUE)
+
+comp_df$tob_sum <- rowSums( comp_df[ c("tobacco_s1p1", "tobacco_s1p2",  "tobacco_s2p1", "tobacco_s2p2", "tobacco_s3p1", "tobacco_s3p2" )], na.rm = TRUE)
+
+comp_df$tom_sum <- rowSums( comp_df[ c("tomato_s1p1", "tomato_s1p2",  "tomato_s2p1", "tomato_s2p2", "tomato_s3p1", "tomato_s3p2" )], na.rm = TRUE)
+
+comp_df$whe_sum <- rowSums( comp_df[ c("wheat_s1p1", "wheat_s1p2",  "wheat_s2p1", "wheat_s2p2", "wheat_s3p1", "wheat_s3p2" )], na.rm = TRUE)
+
+comp_df$yam_sum <- rowSums( comp_df[ c("yam_s1p1", "yam_s1p2",  "yam_s2p1", "yam_s2p2", "yam_s3p1", "yam_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$saff_sum <- rowSums( comp_df[ c("safflower_s1p1", "safflower_s1p2",  "safflower_s2p1", "safflower_s2p2", "safflower_s3p1", "safflower_s3p2" )], na.rm = TRUE)
+
+# Empty comp_df$shall_sum <- rowSums( comp_df[ c("shallots_s1p1", "shallots_s1p2",  "shallots_s2p1", "shallots_s2p2", "shallots_s3p1", "shallots_s3p2" )], na.rm = TRUE)
+
+```
+
+banana, barley, beans, cashew, cassava, chickpeas, citris fruit, clover, cocoa, cocoyam, coffee, cotton, cowpea, cucumber, enset, field pea, flax, garden-eggs, garlic, grape, groundnut, kola, lentil, maise, mango, millet, okra, onion, other, palm dates, palm oil, paprika, peanuts, pepper, pigeon pea, pineapple, plantain, potato, rice, sesame, sheanut, sorghum, soybean, spinach, squash, sugarcane, sunflower, tea, tef,  tobacco, tomato, wheat, yam, safflower, shallots, 
+
+# Adding More columns
+
+```{r}
+comp_df$hhg_ratio <- (comp_df$hhg_count_female/comp_df$hhg_count_male)
+comp_df$lhhg_ratio <- (log(comp_df$hhg_ratio))
+
+
+comp_df$educ_mean_male_plus <- (comp_df$educ_mean_male + .00000001)
+
+
+```
+
+
+gravity                                          
+sprink                                           
+drip, barley, cashew,  cocoyam, egg, ensit, field pea, garlic, lentils, sesame, squash, sunflower, tef, safflower, shallots  vf
+
+# Kill blank columns 
+
+```{r}
+comp_df <- comp_df[colSums(is.na(comp_df)) < 9515, ]
+
+dim(comp_df)
+head(comp_df)
+```
+
+
+# Kill blank rows
+
+```{r}
+comp_df <- comp_df[rowSums(is.na(comp_df)) < 2632, ]
+
+dim(comp_df)
+head(comp_df)
+```
+
+# Remove Outliers
+
+```{r}
+comp_df[!comp_df %in% boxplot.stats(comp_df)$out]
+```
+
+
+# Export
+
+```{r}
+write.csv(comp_df, "reg_df")
+```

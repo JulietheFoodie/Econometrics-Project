@@ -1,0 +1,138 @@
+---
+title: "Individual Data Summary, Markdown 2"
+author: "Julie Norman"
+date: "11/17/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. create new df: individual
+```{r}
+library(tidyverse)
+library(haven)
+#full_df = read_dta("~/Documents/Economics/Econometrics Project/CEEPASurvey.dta")
+
+full_df = read_csv("df2")
+ind = read_csv("df2")
+```
+
+
+2. dplyr select to get rid of all other 
+  "starts with"
+  check the column grab 7*39 (household code)
+
+
+```{r}
+ind <- ind %>% 
+  select(starts_with("hhcode"),
+         starts_with("gender"), 
+         starts_with("age"), 
+         starts_with("married"), 
+         starts_with("educ"), 
+         starts_with("farmwork"), 
+         starts_with("nfarmwork")) 
+                        
+```
+
+4. create new df "individual1"
+3. Do 39x  
+  dplyr selector "contains(k)" grab six columns that have "k" individaul number in them dplyr in loop 
+  grab household code also
+  rename columns "age", "gender" accross all 39 
+  
+
+```{r}
+df_list <- rep(list(NA), 38) 
+
+for(k in 1:38){
+  regex_ind <- paste0("[a-z]+",k,"\\b")
+  genderk <- paste0("gender", k)
+  agek <- paste0("age", k)
+  marriedk <- paste0("married", k)
+  educk <- paste0("educ", k)
+  farmworkk <- paste0("farmwork", k)
+  nfarmworkk <- paste0("nfarmwork", k)
+  
+  indk <- ind %>% 
+    select(hhcode, matches(regex_ind)) %>% 
+    rename_(gender = genderk, 
+            age = agek,
+            married = marriedk,
+            educ = educk,
+            farmwork = farmworkk,
+            nfarmwork = nfarmworkk)
+  df_list[[k]] <- indk
+  }
+
+
+```
+
+5. Rbind data frames  
+
+```{r}
+ind_long <- do.call(rbind, df_list)
+
+
+```
+
+5.5 deleting with complete na
+
+```{r}
+ind_long <- ind_long[rowSums(is.na(ind_long)) < 6, ]
+```
+
+6. group by household code, gender 
+7. summarize by mean of each, count for proportions 
+
+
+```{r}
+hhg_summary <- ind_long %>% 
+  group_by(hhcode, gender) %>%
+  summarize(hhg_count = n(), 
+            educ_mean = mean(educ),
+            educ_med = median(educ),
+            farmwork_countN = sum(farmwork == "no"),
+            farmwork_countY = sum(farmwork == "yes"), 
+            nfarmwork_countN = sum(nfarmwork == "no"),
+            nfarmwork_countY = sum(nfarmwork == "yes"))
+
+head(hhg_summary)
+```
+
+8. seperate females and males
+
+
+```{r}
+hhg_summary <- melt(hhg_summary, id.vars = c("hhcode", "gender"))
+hh_summary <- dcast(hhg_summary, hhcode ~ variable + gender)
+
+head(hh_summary)
+```
+
+10. specify male and female education colums 
+9. 1 row per household, join to the original data 
+
+inner_join df1, df2 by = hhcode 
+```{r}
+gjoin_df <- inner_join(hh_summary, full_df, by = "hhcode")
+
+head(gjoin_df)
+```
+
+
+
+# Write CSV
+
+```{r}
+write.csv(gjoin_df, "df3")
+```
+
+
+
+
+
+
+

@@ -1,0 +1,223 @@
+---
+title: "Regression Work, Markdown 5"
+author: "Julie Norman"
+date: "11/22/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(modeest)
+library(functional)
+library(mosaic)
+library(tidyverse)
+library(stargazer)
+library(ggfortify)
+
+```
+
+
+```{r}
+reg_df <- read_csv("reg_df")
+```
+
+
+# Nas to )
+
+
+
+
+
+```{r}
+reg_df[is.na(reg_df)] <- 0
+
+
+```
+
+
+
+
+# Additional Column creation
+```{r}
+reg_df$country <- factor(reg_df$cadm0, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 28), labels = c("Burkina_Faso", "Egypt", "Ethiopia", "Ghana", "Niger", "Senegal", "South_Africa", "Zambia", "Cameroon",  "Kenya", "Zimbabwe"))
+
+#contrasts(reg_df$country) <- contr.sum(11)
+
+
+hhg_ratio <- reg_df$hhg_ratio
+#hhg_ratio <- (hhg_ratio + .00001)
+#reg_df$lhhg_ratio <- log(hhg_ratio)
+
+qharv_total <- reg_df$qharv_total 
+#qharv_total <- (hhg_ratio + .00001)
+#reg_df$lqharv_total <- log(qharv_total)
+
+educ_mean_male <- reg_df$educ_mean_male
+#educ_mean_male <- (educ_mean_male + .00001)
+#reg_df$leduc_mean_male <- log(educ_mean_male)
+
+```
+
+# Remove Outliers
+
+```{r}
+#reg_df$qharv_total[!reg_df$qharv_total %in% boxplot.stats(reg_df$qharv_total)$out]
+
+#reg_df$hhg_ratio[!reg_df$hhg_ratio %in% boxplot.stats(reg_df$hhg_ratio)$out]
+
+#reg_df$educ_mean_male[!reg_df$educ_mean_male %in% boxplot.stats(reg_df$educ_mean_male)$out]
+
+#reg_df$educ_mean_female[!reg_df$educ_mean_female %in% boxplot.stats(reg_df$educ_mean_female)$out]
+
+#outliers <- c(5100071002, 70013301, 70045213, 70051615, 40041102, 20283633)5100071002, 70012711, 70012711, 70045213, 100071002
+
+#reg_df2 <- reg_df[!reg_df$hhcode == "20283633",  ]
+#reg_df2 <- reg_df[!reg_df$hhcode == "5100071002",  ]
+reg_df2 <- reg_df[!reg_df$hhcode == "70013301",  ]
+reg_df2 <- reg_df2[!reg_df2$hhcode == "70045213",  ]
+#reg_df2 <- reg_df[!reg_df$hhcode == "70051615",  ]
+reg_df2 <- reg_df2[!reg_df2$hhcode == "40041102",  ]
+reg_df2 <- reg_df2[!reg_df2$hhcode == "20010209",  ]
+#reg_df2 <- reg_df[!reg_df$hhcode == "70012711",  ]
+reg_df2 <- reg_df2[!reg_df2$hhcode == "100071002", ]
+
+
+
+```
+
+```{r}
+dim(reg_df2)
+
+```
+
+
+```{r}
+reg1 <- lm(educ_mean_female ~ country + hhg_ratio + I(hhg_ratio^2) + educ_mean_male + I(educ_mean_male^2) + hhelectric + qharv_total + I(qharv_total^2)+ hhrelig, data = reg_df2)
+
+summary(reg1)
+```
+
+
+```{r}
+table(reg_df2$hhrelig)
+```
+
+
+
+```{r}
+curve(-.2733 + .00000103*x - .00000000000005974*x^2, 0, 20084000)
+```
+
+
+# Summary
+```{r}
+summary(reg_df$educ_mean_female)
+
+favstats(educ_mean_female ~ country, data = reg_df)
+
+ggplot(reg_df2, aes(y = educ_mean_female, x = country)) + 
+  geom_boxplot() + 
+  labs(x = "Country", y = "Average Education for Household Women")
+```
+
+
+```{r}
+ggplot(reg_df, aes(x = farmtype, y =   qharv_total)) +
+  geom_boxplot()
+```
+
+
+```{r}
+#reg_crop <- lm(educ_mean_female ~ ban_sum I(ban_sum^2) + bean_sum + I(bean_sum^2) + cass_sum + I(cass_sum^2) + chic_sum + I(chic_sum^2) + citfrui_sum + I(citfrui_sum^2) + clov_sum + I(clov_sum^2) + cof_sum + cot_sum + cow_sum + cuc_sum + flax_sum + grap_sum + gnut_sum + kol_sum +  mais_sum + mang_sum + mil_sum + okra_sum + oni_sum + other_sum + date_sum + p_oil_sum + pap_sum + pnut_sum + pep_sum + pigp_sum + pine_sum + plan_sum + pota_sum + rice_sum + shea_sum + sorg_sum + soy_sum + spin_sum + sug_sum + tea_sum + tob_sum + tom_sum + whe_sum + yam_sum, data = reg_df)
+
+#summary(reg_crop)
+```
+
+
+sum to zero constraint, deviance contrast "contr.sum"
+remove religion 
+Running F tests?
+
+
+
+
+
+# Residuals
+```{r}
+#residuals <- reg1$residuals)
+
+freg1 <- fortify(reg1)
+
+ggplot(freg1, aes(x = .fitted, y = .resid)) + 
+  geom_point() 
+```
+
+```{r}
+plot(lm(educ_mean_female ~ country + hhg_ratio + I(hhg_ratio^2) + educ_mean_male + I(educ_mean_male^2) + hhelectric + qharv_total + I(qharv_total^2)+ hhrelig, data = reg_df))
+```
+
+# descriptive plots
+```{r}
+
+autoplot(reg1, label.size = 3) 
+ 
+```
+
+
+
+
+```{r}
+
+
+ggplot(reg_df2, aes(y = educ_mean_female, x = ( educ_mean_male + I(educ_mean_male^2)))) +
+  geom_point() + 
+  labs(x = "Average Education for Household Men", y = "Average Education for Household Women")
+```
+
+```{r}
+ggplot(reg_df2, aes(y = educ_mean_female, x = ( hhg_ratio + I(hhg_ratio^2)))) +
+  geom_point() + 
+  labs(x = "Household Gender Ratio", y = "Average Education for Household Women")
+```
+
+```{r}
+ggplot(reg_df2, aes(y = educ_mean_female, x = ( qharv_total + I(qharv_total^2)))) +
+  geom_point() +
+  labs(x = "Harvest Quantity (kg)", y = "Average Education for Household Women")
+```
+
+```{r}
+ggplot(reg_df, aes(hhg_ratio)) +
+  geom_histogram(binwidth = .5)
+```
+
+```{r}
+ggplot(reg_df, aes(lhhg_ratio)) +
+  geom_histogram(binwidth = .5)
+```
+
+```{r}
+library(stargazer)
+
+stargazer(reg1, type = "text")
+```
+
+```{r}
+library(lmtest)
+
+resettest(reg1)
+```
+
+ 
+```{r}
+bptest(reg1)
+```
+
+
+
+
+

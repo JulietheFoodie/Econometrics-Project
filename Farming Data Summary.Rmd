@@ -1,0 +1,208 @@
+---
+title: "Farming Data Summary"
+author: "Julie Norman"
+date: "11/22/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+comp_df2 <- read.csv("comp_df1")
+```
+
+Select
+```{r}
+df_farm <- comp_df2 %>% 
+  select(starts_with("hhcode"),
+         starts_with("s1"), 
+         starts_with("s2"), 
+         starts_with("s3")) 
+
+head(df_farm)
+
+
+```
+
+
+```{r}
+df_s1p1 <- df_farm %>%
+  select(starts_with("hhcode"), starts_with("s1p1")) 
+
+df_s1p2 <- df_farm %>% 
+  select(starts_with("hhcode"), starts_with("s1p2"))
+
+df_s2p1 <- df_farm %>%
+  select(starts_with("hhcode"), starts_with("s2p1")) 
+
+df_s2p2 <- df_farm %>% 
+  select(starts_with("hhcode"), starts_with("s2p2"))
+
+df_s3p1 <- df_farm %>%
+  select(starts_with("hhcode"), starts_with("s3p1")) 
+
+df_s3p2 <- df_farm %>% 
+  select(starts_with("hhcode"), starts_with("s3p2"))
+
+
+
+```
+
+
+
+
+# Change Column Names
+
+## Season 1 Plot 1 
+
+```{r}
+colCleans1p1 <- function(x){ colnames(x) <- gsub("s1p1", "", colnames(x)); x } 
+
+
+df_s1p1 <- colCleans1p1(df_s1p1)
+
+df_s1p1$plot <- rep("s1p1",nrow(df_s1p1)) # make new column 
+
+head(df_s1p1)
+
+table(df_s1p1$irrig1)
+```
+
+## Season 1 Plot 2 
+
+```{r}
+colCleans1p2 <- function(x){ colnames(x) <- gsub("s1p2", "", colnames(x)); x } 
+
+
+df_s1p2 <- colCleans1p2(df_s1p2)
+
+df_s1p2$plot <- rep("s1p2",nrow(df_s1p2)) # make new column 
+
+
+```
+
+## Season 2 Plot 1 
+
+```{r}
+colCleans2p1 <- function(x){ colnames(x) <- gsub("s2p1", "", colnames(x)); x } 
+
+
+df_s2p1 <- colCleans1p1(df_s1p1)
+
+df_s2p1$plot <- rep("s2p1",nrow(df_s2p1)) # make new column 
+
+head(df_s2p1)
+
+
+```
+
+## Season 2 Plot 2 
+
+```{r}
+colCleans2p2 <- function(x){ colnames(x) <- gsub("s2p2", "", colnames(x)); x } 
+
+
+df_s2p2 <- colCleans2p2(df_s2p2)
+
+df_s2p2$plot <- rep("s2p2",nrow(df_s2p2)) # make new column 
+
+head(df_s2p2)
+```
+
+
+## Season 3 Plot 1 
+
+```{r}
+colCleans3p1 <- function(x){ colnames(x) <- gsub("s3p1", "", colnames(x)); x } 
+
+
+df_s3p1 <- colCleans3p1(df_s3p1)
+
+df_s3p1$plot <- rep("s3p1",nrow(df_s3p1)) # make new column 
+
+head(df_s3p1)
+```
+
+## Season 3 Plot 2 
+
+```{r}
+colCleans3p2 <- function(x){ colnames(x) <- gsub("s3p2", "", colnames(x)); x } 
+
+
+df_s3p2 <- colCleans3p2(df_s3p2)
+
+df_s3p2$plot <- rep("s3p2",nrow(df_s3p2)) # make new column 
+
+head(df_s3p2)
+
+
+```
+
+
+# Rbind Columns
+```{r}
+farmdf_list <- list(df_s1p1, df_s1p2, df_s2p1, df_s2p2, df_s3p1, df_s3p2)
+
+df_farm <- do.call("rbind", farmdf_list)
+
+
+
+head(df_farm)
+
+
+```
+
+df %>% 
+  gather(variable, value, -(month:student)) %>%
+  unite(temp, student, variable) %>%
+  spread(temp, value)
+
+
+# Spread 
+
+```{r}
+#df_farm$c1con <- df_farm$c1
+#df_farm$c2con <- df_farm$c2
+#df_farm$c3con <- df_farm$c3
+#df_farm$c4con <- df_farm$c4
+#df_farm$c5con <- df_farm$c5
+#df_farm$c6con <- df_farm$c6
+
+farm_sum <- spread(df_farm, c1, c1qharv) %>%
+            spread(c2, c2qharv) %>%
+            spread(c3, c3qharv) %>%
+            spread(c4, c4qharv) %>%
+            spread(c5, c5qharv) %>%
+            spread(c6, c6qharv) 
+head(farm_sum)
+```
+
+
+# Melt and Cast
+
+```{r}
+farm_sum <- melt(farm_sum, id.vars = c("hhcode", "plot"))
+farm_sum <- dcast(farm_sum, hhcode ~ variable + plot)
+
+head(farm_sum)
+```
+
+# Bind
+
+```{r}
+fjoin_df <- inner_join(farm_sum, comp_df2,  by = "hhcode")
+
+head(fjoin_df)
+
+table(fjoin_df$fert_s1p1)
+```
+
+# Export
+
+```{r}
+write.csv(fjoin_df, "comp_df2")
+```
+
+
